@@ -40,3 +40,18 @@ Backend
     - backend/ # Express server
   - packages/
     - shared-types/ # Shared data types
+
+## App Responsibilities
+
+Frontend
+
+- Authentication layer
+  - OAuth
+  - credientials login
+  - session management (like JWT or cookies)
+  - enforce authenitated routes
+- Frontend of pages and user facing interaction poitns
+
+Backend
+
+- APIs, with individual auth guarding
