@@ -1,0 +1,50 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+coverage/
+turbo/
+.vercel/
+.cache/
+
+# Logs
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sw?
+
+# TypeScript
+*.tsbuildinfo
+
+# Monorepo specific
+apps/**/node_modules/
+packages/**/node_modules/
+apps/**/.next/
+apps/**/dist/
+packages/**/dist/
+
+# Turbo cache
+.turbo/
