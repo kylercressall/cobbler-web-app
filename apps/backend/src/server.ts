@@ -11,3 +11,7 @@ app.get("/", (_req: Request, res: Response) => {
 app.listen(3001, () => {
   console.log("Backend listening on port 3001");
 });
+
+app.post("/api/create-user", () => {
+  // create user in my users table
+});
