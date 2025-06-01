@@ -1,17 +1,7 @@
-import express, { Request, Response } from "express";
+import app from "./app";
+import "./env";
 
-const app = express();
-
-app.use(express.json());
-
-app.get("/", (_req: Request, res: Response) => {
-  res.send("API is running!");
-});
-
-app.listen(3001, () => {
+const PORT = 3001;
+app.listen(PORT, () => {
   console.log("Backend listening on port 3001");
-});
-
-app.post("/api/create-user", () => {
-  // create user in my users table
 });

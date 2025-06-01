@@ -17,7 +17,7 @@ export default function LoginPage() {
     });
 
     if (error) setMessage(error.message);
-    else router.push("/dashboard"); // redirect to protected page
+    else router.push("/dashboard");
   };
 
   return (

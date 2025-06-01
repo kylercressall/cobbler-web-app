@@ -1,0 +1,61 @@
+/* Reset some base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --dark-green: #01462b;
+  --light-green: #1c8757;
+  --beige: #fff8e9;
+  --white: #fffffb;
+  --yellow: #ffb800;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+.top-bar {
+  border-bottom: 1px solid #ccc;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 300px;
+  background: var(--white);
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Contact list */
+.contact-item {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.contact-item:hover {
+  background-color: #f0f0f0;
+}
+
+.contact-item.active {
+  background-color: var(--beige);
+  font-weight: bold;
+}

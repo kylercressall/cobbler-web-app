@@ -4,16 +4,16 @@
 
 // Example data
 
-export interface User {
-  id: string;
-  email: string;
-  password_hash: string;
-  created_at: string;
-}
+// export interface User {
+//   id: string;
+//   email: string;
+//   password_hash: string;
+//   created_at: string;
+// }
 
-export interface Contact {
-  id: string;
-  name: string;
-  title: string;
-  lastContacted: Date;
-}
+// export interface Contact {
+//   id: string;
+//   name: string;
+//   title: string;
+//   lastContacted: Date;
+// }
