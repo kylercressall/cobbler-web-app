@@ -9,6 +9,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { supabase } from "../../../src/lib/supabase/server"; // aliased from backend
 import type { JWT } from "next-auth/jwt";
 import { User } from "../../../src/types/user-data";
+// import { User } from "backend/types/user-data";
 
 export const authOptions = {
   providers: [

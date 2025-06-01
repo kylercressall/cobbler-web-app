@@ -38,6 +38,11 @@ body {
   padding: 1rem;
 }
 
+button {
+  padding: 8px 30px;
+  margin-bottom: 20px;
+}
+
 .main {
   flex: 1;
   padding: 2rem;
@@ -47,6 +52,7 @@ body {
 /* Contact list */
 .contact-item {
   padding: 8px;
+  border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   cursor: pointer;
 }
