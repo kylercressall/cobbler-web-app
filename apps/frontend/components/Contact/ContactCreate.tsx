@@ -1,12 +1,16 @@
+// Contact form is the form used to create/edit contacts
 import { useState, useEffect } from "react";
 import { Contact } from "backend/types/user-data";
 
-interface ContactFormProps {
+interface ContactCreateProps {
   contact?: Contact;
   onSubmit: (contactData: Partial<Contact>) => void;
 }
 
-export default function ContactForm({ contact, onSubmit }: ContactFormProps) {
+export default function ContactCreate({
+  contact,
+  onSubmit,
+}: ContactCreateProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,10 +33,7 @@ export default function ContactForm({ contact, onSubmit }: ContactFormProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-    >
+    <form className="contact-form" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Full name"

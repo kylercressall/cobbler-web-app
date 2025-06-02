@@ -1,4 +1,6 @@
-import { Contact } from "../types/user-data";
+// Contact List displays all the selectable contacts in the left colmn
+import { Contact } from "../../../types/user-data";
+import ContactItem from "./ContactItem";
 
 interface ContactListProps {
   contacts: Contact[];
@@ -13,18 +15,11 @@ export default function ContactList({ contacts, onSelect }: ContactListProps) {
   return (
     <div>
       {contacts.map((contact) => (
-        <div
+        <ContactItem
           key={contact.id}
-          className="contact-item"
-          onClick={() => onSelect(contact)}
-          style={{
-            cursor: "pointer",
-            padding: "8px",
-            borderBottom: "1px solid #eee",
-          }}
-        >
-          {contact.name}
-        </div>
+          contact={contact}
+          onSelect={() => onSelect(contact)}
+        />
       ))}
     </div>
   );

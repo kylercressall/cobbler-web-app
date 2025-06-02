@@ -53,3 +53,45 @@ router.post("/", verifyUser, async (req: AuthedRequest, res: Response) => {
 });
 
 export default router;
+
+router.patch("/:id", verifyUser, async (req: AuthedRequest, res: Response) => {
+  const userId = req.user?.id;
+  const contactId = req.params.id;
+
+  if (!userId) {
+    res.status(401).json({ error: "No user found" });
+    return;
+  }
+
+  // check to make sure the user owns the contact
+  const { data: contact, error: fetchError } = await supabase
+    .from("contacts")
+    .select("*")
+    .eq("id", contactId)
+    .eq("user_id", userId)
+    .single();
+
+  if (fetchError || !contact) {
+    res.status(500).json({ error: fetchError });
+    return;
+  }
+
+  const updateFields = req.body;
+
+  // update that row with the new data via req.body
+  const { data: updatedContact, error: updateError } = await supabase
+    .from("contacts")
+    .update(updateFields)
+    .eq("id", contactId)
+    .select()
+    .single();
+
+  if (updateError) {
+    res.json(500).json({ error: updateError });
+    return;
+  }
+
+  console.log("Update success:", updatedContact);
+
+  res.status(200).json(updatedContact);
+});
