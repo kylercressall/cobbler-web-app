@@ -3,11 +3,16 @@ import { Contact } from "../../../types/user-data";
 import ContactItem from "./ContactItem";
 
 interface ContactListProps {
+  selectedContactId: string;
   contacts: Contact[];
   onSelect: (contact: Contact) => void;
 }
 
-export default function ContactList({ contacts, onSelect }: ContactListProps) {
+export default function ContactList({
+  selectedContactId,
+  contacts,
+  onSelect,
+}: ContactListProps) {
   if (contacts.length === 0) {
     return <p>No contacts found.</p>;
   }
@@ -18,6 +23,7 @@ export default function ContactList({ contacts, onSelect }: ContactListProps) {
         <ContactItem
           key={contact.id}
           contact={contact}
+          selectedContactId={selectedContactId || ""}
           onSelect={() => onSelect(contact)}
         />
       ))}

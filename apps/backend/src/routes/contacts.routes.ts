@@ -35,8 +35,6 @@ router.post("/", verifyUser, async (req: AuthedRequest, res: Response) => {
 
   req.body["user_id"] = userId;
 
-  console.log(req.body);
-
   // insert data and grab that line
   const { data, error } = await supabase
     .from("contacts")
@@ -94,4 +92,28 @@ router.patch("/:id", verifyUser, async (req: AuthedRequest, res: Response) => {
   console.log("Update success:", updatedContact);
 
   res.status(200).json(updatedContact);
+});
+
+router.delete("/:id", verifyUser, async (req: AuthedRequest, res: Response) => {
+  const userId = req.user?.id;
+  const contactId = req.params.id;
+
+  if (!userId) {
+    res.status(401).json({ error: "No user found" });
+    return;
+  }
+
+  const { error } = await supabase
+    .from("contacts")
+    .delete()
+    .eq("id", contactId)
+    .eq("user_id", userId);
+
+  if (error) {
+    res.status(500).json({ error: error.message });
+    return;
+  }
+
+  res.status(200).json({ success: true });
+  return;
 });

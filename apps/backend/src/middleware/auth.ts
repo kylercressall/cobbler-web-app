@@ -1,11 +1,7 @@
-import { createClient } from "@supabase/supabase-js";
 import { Request, Response, NextFunction } from "express";
 import "../env";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
+import { supabase } from "../lib/supabase/server";
 
 export async function verifyUser(
   req: Request,

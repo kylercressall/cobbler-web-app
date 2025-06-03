@@ -9,8 +9,10 @@ import ContactList from "../../components/Contact/List/ContactList";
 import ContactDetails from "../../components/Contact/ContactDetails";
 import ContactCreate from "../../components/Contact/ContactCreate";
 import ContactEdit from "../../components/Contact/ContactEdit";
+import ConfirmModal from "../../components/ConfirmModal";
 
 import { getFetchToken } from "../../lib/getFetchToken";
+import ContactDashboard from "backend/components/Contact/ContactDashboard";
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
@@ -18,6 +20,13 @@ export default function Dashboard() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  // States:
+  //   selectedContact -> if true, show the details and allow editing
+  //   isEditing -> edit was clicked, with the selected contact
+  //   isCreating -> create was clicked, selected contact is now null
 
   // when loaded, get the user and their contacts
   useEffect(() => {
@@ -59,6 +68,7 @@ export default function Dashboard() {
   // handles clicking on contacts and setting it to selected (to show details on the right pane)
   const setSelection = (contact: Contact) => {
     setSelectedContact(contact);
+    setIsCreating(false);
   };
 
   // handles creating a contact given the contact data
@@ -80,6 +90,8 @@ export default function Dashboard() {
     const newContact = await res.json();
 
     await fetchContacts();
+    setIsEditing(false);
+    setIsCreating(false);
     setSelectedContact(newContact);
 
     // TODO make a non-intrusive popup confirming the contact `if (res.ok)`
@@ -87,16 +99,7 @@ export default function Dashboard() {
 
   // handle a contact being edited- the submitting/logic after part
   const handleEditContact = async (updatedData: Partial<Contact>) => {
-    console.log("Updated Data:", updatedData);
-
     if (!selectedContact) return;
-
-    console.log(
-      "patch url:",
-      `process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts/${
-        selectedContact!.id
-      }`
-    );
 
     const token = await getFetchToken();
     const res = await fetch(
@@ -124,12 +127,50 @@ export default function Dashboard() {
   };
 
   const discardEditedContact = () => {
+    console.log("discard");
     setIsEditing(false);
+    setIsCreating(false);
   };
 
-  const omitIdFields = (contact: Contact): Omit<Contact, "id" | "user_id"> => {
-    const { id, user_id, ...rest } = contact;
-    return rest;
+  const toggleCreateContact = async () => {
+    setSelectedContact(null);
+    setIsCreating(true);
+  };
+
+  const toggleDashboard = async () => {
+    setIsCreating(false);
+    setIsEditing(false);
+    setSelectedContact(null);
+  };
+
+  const promptDelete = () => {
+    if (!selectedContact) return;
+    setShowConfirmModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedContact) return;
+
+    setShowConfirmModal(false); // hide modal
+
+    const token = await getFetchToken();
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts/${selectedContact.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.ok) {
+      await fetchContacts();
+      setSelectedContact(null);
+    } else {
+      console.error("Delete failed:", await res.text());
+    }
   };
 
   return (
@@ -143,34 +184,48 @@ export default function Dashboard() {
           className="sidebar"
           style={{ width: "300px", borderRight: "1px solid #ccc" }}
         >
-          <button onClick={async () => setSelectedContact(null)}>
-            Create Contact
-          </button>
-          <ContactList contacts={contacts} onSelect={setSelection} />
+          <ContactList
+            contacts={contacts}
+            onSelect={setSelection}
+            selectedContactId={selectedContact?.id || ""}
+          />
         </div>
-        <div className="main" style={{ flex: 1, padding: "1rem" }}>
+        <div className="main">
           {selectedContact ? (
             isEditing ? (
               <ContactEdit
-                contactData={omitIdFields(selectedContact)}
+                contactData={selectedContact}
                 onSuccess={handleEditContact}
                 onDiscard={discardEditedContact}
+                onDelete={promptDelete}
               />
             ) : (
               <ContactDetails
                 contact={selectedContact}
                 onEdit={editSelectedContact}
+                onCreate={toggleCreateContact}
+                toggleDashboard={toggleDashboard}
               />
             )
-          ) : (
+          ) : isCreating ? (
             <ContactCreate
               onSubmit={async (contactData) => {
                 createContact(contactData);
               }}
+              onDiscard={discardEditedContact}
             />
+          ) : (
+            <ContactDashboard />
           )}
         </div>
       </div>
+      {showConfirmModal && (
+        <ConfirmModal
+          message={`Are you sure you want to delete ${selectedContact?.name}?`}
+          onConfirm={handleDelete}
+          onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
     </>
   );
 }

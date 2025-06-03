@@ -40,7 +40,6 @@ export default function Header() {
       }
 
       const { name } = await res.json();
-      console.log(name);
       if (name) setUsername(name);
       return name;
     };

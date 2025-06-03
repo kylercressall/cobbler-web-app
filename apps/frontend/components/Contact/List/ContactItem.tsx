@@ -2,14 +2,21 @@ import { Contact } from "../../../types/user-data";
 
 interface ContactItemProps {
   contact: Contact;
+  selectedContactId: string;
   onSelect: (contact: Contact) => void;
 }
 
-export default function ContactItem({ contact, onSelect }: ContactItemProps) {
+export default function ContactItem({
+  contact,
+  selectedContactId,
+  onSelect,
+}: ContactItemProps) {
   return (
     <div
       key={contact.id}
-      className="contact-item"
+      className={`contact-item ${
+        selectedContactId === contact.id ? "selected" : ""
+      }`}
       onClick={() => onSelect(contact)}
       style={{
         cursor: "pointer",

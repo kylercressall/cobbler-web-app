@@ -6,8 +6,6 @@ import { supabase } from "../lib/supabase/server";
 const router = Router();
 
 router.get("/name", verifyUser, async (req: AuthedRequest, res: Response) => {
-  console.log("username requested api/user/name");
-
   const userId = req.user?.id;
   if (!userId) {
     res.status(401).json({ error: "No user found" });
