@@ -37,11 +37,7 @@ export default function Dashboard() {
   const fetchContacts = async () => {
     try {
       const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      if (!token) {
-        console.error("Not logged in");
-        return;
-      }
+      const token = await getFetchToken();
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts`,
@@ -198,7 +194,7 @@ export default function Dashboard() {
               />
             ) : (
               <ContactDetails
-                contact={selectedContact}
+                contactId={selectedContact.id}
                 onEdit={editSelectedContact}
                 onCreate={toggleCreateContact}
                 toggleDashboard={toggleDashboard}
@@ -218,7 +214,7 @@ export default function Dashboard() {
       </div>
       {showConfirmModal && (
         <ConfirmModal
-          message={`Are you sure you want to delete ${selectedContact?.name}?`}
+          message={`Are you sure you want to delete ${selectedContact?.first_name} ${selectedContact?.last_name}?`}
           onConfirm={handleDelete}
           onCancel={() => setShowConfirmModal(false)}
         />

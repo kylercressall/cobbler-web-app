@@ -22,7 +22,6 @@ app.get("/", (_req, res) => {
 
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/user", userRoutes);
-// app.use("/api/users", usersRoutes);
 // app.use("/api/interactions", interactionsRoutes);
 
 // app.use(errorHandler);

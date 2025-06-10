@@ -49,14 +49,22 @@ export default function ContactEdit({
         onSubmit={handleSubmit}
       >
         <div className="form-row">
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="first_name">First Name:</label>
           <input
-            name="name"
-            value={contact.name ?? ""}
+            name="first_name"
+            value={contact.first_name ?? ""}
             onChange={handleChange}
-            placeholder="Name"
+            placeholder="first_name"
+          />
+          <label htmlFor="last_name">Last Name:</label>
+          <input
+            name="last_name"
+            value={contact.last_name ?? ""}
+            onChange={handleChange}
+            placeholder="last_name"
           />
         </div>
+
         <div className="form-row">
           <label htmlFor="email">Email:</label>
           <input
