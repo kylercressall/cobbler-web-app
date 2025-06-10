@@ -19,7 +19,10 @@ export default function SignupPage() {
   };
 
   return (
-    <div>
+    <div className="login-pannel">
+      <h1>Cobbler</h1>
+
+      <img src="/images/cobbler-logo.png" alt="logo not found" />
       <h2>Sign Up</h2>
       <input
         type="email"
@@ -35,6 +38,7 @@ export default function SignupPage() {
       />
       <button onClick={handleSignup}>Sign Up</button>
       {message && <p>{message}</p>}
+      <p>(sign in with google/linkedin/github coming soon)</p>
     </div>
   );
 }

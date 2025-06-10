@@ -1,4 +1,28 @@
 /* Reset some base styles */
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/Poppins-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Oxygen";
+  src: url("/fonts/Oxygen-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gothic A1";
+  src: url("/fonts/GothicA1-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -17,6 +41,8 @@ body {
   font-family: system-ui, sans-serif;
   background-color: #f9f9f9;
   color: #333;
+
+  font-family: "Poppins", sans-serif;
 }
 
 /* Layout */
@@ -25,17 +51,17 @@ body {
   height: 100vh;
 }
 
-.top-bar {
-  border-bottom: 1px solid #ccc;
-  padding: 20px;
-}
-
 .sidebar {
   width: 300px;
   background: var(--white);
   border-right: 1px solid #ccc;
   overflow-y: auto;
   padding: 1rem;
+}
+
+.top-bar {
+  border-bottom: 1px solid #ccc;
+  padding: 20px;
 }
 
 button {
@@ -140,4 +166,32 @@ button {
   display: flex;
   gap: 1rem;
   justify-content: center;
+}
+
+.login-pannel {
+  margin: 30% 30%;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 14px 10px 60px -9px rgba(0, 0, 0, 0.75);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  border: 1px var(--dark-green) solid;
+}
+
+.login-pannel > input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.login-pannel > img {
+  width: 100px;
+  border-radius: 10px;
+}
+
+.error-message {
+  color: red;
 }

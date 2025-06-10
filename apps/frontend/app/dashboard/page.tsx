@@ -180,10 +180,7 @@ export default function Dashboard() {
         className="app-container"
         style={{ display: "flex", height: "100vh" }}
       >
-        <div
-          className="sidebar"
-          style={{ width: "300px", borderRight: "1px solid #ccc" }}
-        >
+        <div className="sidebar" style={{ backgroundColor: "var(--white)" }}>
           <ContactList
             contacts={contacts}
             onSelect={setSelection}
