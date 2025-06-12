@@ -14,17 +14,17 @@ export default function ContactCreate({
   onSubmit,
   onDiscard,
 }: ContactCreateProps) {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
   useEffect(() => {
     if (contact) {
-      setName(contact.name || "");
+      setFirstName(contact.first_name || "");
       setEmail(contact.email || "");
       setPhone(contact.phone || "");
     } else {
-      setName("");
+      setFirstName("");
       setEmail("");
       setPhone("");
     }
@@ -32,7 +32,7 @@ export default function ContactCreate({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, email, phone });
+    onSubmit({ first_name: firstName, email, phone });
   };
 
   return (
@@ -51,13 +51,13 @@ export default function ContactCreate({
       >
         <h2>Create Contact</h2>
         <div className="form-row">
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="first-name">First Name:</label>
           <input
             name="name"
             type="text"
-            placeholder="Full name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            placeholder="First name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
           />
         </div>
         <div className="form-row">

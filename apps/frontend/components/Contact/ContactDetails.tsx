@@ -3,13 +3,13 @@ import { Contact, FullContact } from "../../types/user-data";
 import { useEffect, useState } from "react";
 
 import ContactHeader from "./ContactHeader";
-import { getFetchToken } from "backend/lib/getFetchToken";
 
 interface ContactDetailsProps {
   contactId: string;
   onEdit: () => void;
   onCreate: () => void;
   toggleDashboard: () => void;
+  fetchAllContactDetails: () => Promise<FullContact | undefined>;
 }
 
 export default function ContactDetails({
@@ -17,40 +17,21 @@ export default function ContactDetails({
   onEdit,
   onCreate,
   toggleDashboard,
+  fetchAllContactDetails,
 }: ContactDetailsProps) {
   const [contact, setContact] = useState<FullContact | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const fetchAllContactDetails = async () => {
-    try {
-      const token = await getFetchToken();
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts/${contactId}/full`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error(`Request failed: ${res.status}`);
-      }
-
-      const data = await res.json();
-
-      return data;
-    } catch (err) {
-      console.error("Failed to fetch contacts:", err);
-    }
-  };
 
   useEffect(() => {
     const fetchContact = async () => {
       if (!contactId) return;
       setLoading(true);
       const data = await fetchAllContactDetails();
+      if (!data) {
+        console.error("full contact data fetched is null");
+        return;
+      }
+
       setContact(data);
       setLoading(false);
     };
