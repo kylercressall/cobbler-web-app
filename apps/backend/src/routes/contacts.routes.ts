@@ -5,6 +5,20 @@ import { supabase } from "../lib/supabase/server";
 
 const router = Router();
 
+type PhoneInput = {
+  id?: string;
+  value: string;
+  label?: string;
+  is_primary: boolean;
+};
+
+type EmailInput = {
+  id?: string;
+  value: string;
+  label?: string;
+  is_primary: boolean;
+};
+
 // Get all contacts for the authed user, lightrweight
 router.get("/", verifyUser, async (req: AuthedRequest, res: Response) => {
   const userId = req.user?.id;
@@ -12,7 +26,9 @@ router.get("/", verifyUser, async (req: AuthedRequest, res: Response) => {
   const { data, error } = await supabase
     .from("contacts")
     .select("*")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .order("last_name", { ascending: true })
+    .order("first_name", { ascending: true });
 
   if (error) {
     res.status(500).json({ error: error.message });
@@ -38,6 +54,7 @@ router.post("/", verifyUser, async (req: AuthedRequest, res: Response) => {
   if (error) {
     console.error("Insert contact error:", error);
     res.status(500).json({ error: error.message });
+    return;
   }
 
   res.status(200).json(data);
@@ -61,25 +78,111 @@ router.patch("/:id", verifyUser, async (req: AuthedRequest, res: Response) => {
     return;
   }
 
-  const updateFields = req.body;
+  // break down the full contact data to its individual tables
+  const { phones, emails, social_accounts, photos, attributes, ...fields } =
+    req.body;
 
   // update that row with the new data via req.body
   const { data: updatedContact, error: updateError } = await supabase
     .from("contacts")
-    .update(updateFields)
+    .update(fields)
     .eq("id", contactId)
     .select()
     .single();
 
   if (updateError) {
-    res.json(500).json({ error: updateError });
+    console.log("update error");
+    res.status(500).json({ error: updateError });
     return;
   }
 
-  console.log("Update success:", updatedContact);
+  // make sure all passed in data is compatable with correct column names
+  const normalizedPhones =
+    phones?.map(({ value, ...rest }: PhoneInput) => ({
+      ...rest,
+      phone_number: value,
+    })) ?? [];
+
+  const normalizedEmails =
+    emails?.map(({ value, ...rest }: EmailInput) => ({
+      ...rest,
+      email: value,
+    })) ?? [];
+
+  // update all subtables
+  try {
+    if (phones)
+      await syncSubtable("contact_phone_numbers", contactId, normalizedPhones);
+    if (emails)
+      await syncSubtable("contact_emails", contactId, normalizedEmails);
+    if (social_accounts)
+      await syncSubtable("contact_social_accounts", contactId, social_accounts);
+    if (photos) await syncSubtable("contact_photos", contactId, photos);
+    if (attributes)
+      await syncSubtable("contact_attributes", contactId, attributes);
+  } catch (err) {
+    res.status(500).json({ error: err });
+    return;
+  }
 
   res.status(200).json(updatedContact);
 });
+
+async function syncSubtable(table: string, contactId: string, newRows: any[]) {
+  console.log("synctable", table);
+
+  // Get the existing rows
+  const { data: existingRows, error: fetchError } = await supabase
+    .from(table)
+    .select("*")
+    .eq("contact_id", contactId);
+
+  if (fetchError) throw fetchError;
+
+  const toInsert: any[] = [];
+  const toUpdate: any[] = [];
+  const existingIds = new Set<string>();
+
+  for (const newRow of newRows) {
+    if (newRow.id) {
+      existingIds.add(newRow.id);
+      const match = existingRows.find((r) => r.id === newRow.id);
+      console.log(
+        "match existing",
+        JSON.stringify(match),
+        "match newrow",
+        JSON.stringify({ ...match, ...newRow })
+      );
+
+      // If the id's match but content isn't the same, prepare to update it
+      if (
+        match &&
+        JSON.stringify(match) !== JSON.stringify({ ...match, ...newRow })
+      ) {
+        toUpdate.push(newRow);
+      }
+    } else {
+      // If it isn't in the list of existing rows, prepare to insert it
+      toInsert.push({ ...newRow, contact_id: contactId });
+    }
+  }
+
+  const toDelete = existingRows
+    .filter((r) => !existingIds.has(r.id))
+    .map((r) => r.id);
+
+  // Apply everything
+  if (toInsert.length) await supabase.from(table).insert(toInsert);
+  if (toUpdate.length)
+    await Promise.all(
+      toUpdate.map((row) => supabase.from(table).update(row).eq("id", row.id))
+    );
+  if (toDelete.length) await supabase.from(table).delete().in("id", toDelete);
+
+  console.log("update", toUpdate);
+  console.log("insert", toInsert);
+  console.log("delete", toDelete);
+}
 
 // Delete contact
 router.delete("/:id", verifyUser, async (req: AuthedRequest, res: Response) => {
@@ -126,37 +229,43 @@ router.get(
 
     if (contactError || !contact) {
       res.status(404).send({ error: "Not found or unauthorized" });
+      return;
     }
-
-    console.log("backend: ", contact);
 
     // Get all the attributes
     const [emailsRes, phonesRes, socialsRes, photosRes, attributesRes] =
       await Promise.all([
         supabase
           .from("contact_emails")
-          .select("email, label, is_primary")
-          .eq("contact_id", contactId),
+          .select("id, email, label, is_primary")
+          .eq("contact_id", contactId)
+          .order("is_primary", { ascending: false })
+          .order("label"),
         supabase
           .from("contact_phone_numbers")
-          .select("phone_number, label, is_primary")
-          .eq("contact_id", contactId),
+          .select("id, phone_number, label, is_primary")
+          .eq("contact_id", contactId)
+          .order("is_primary", { ascending: false })
+          .order("label"),
         supabase
           .from("contact_social_accounts")
-          .select("platform, username, url")
-          .eq("contact_id", contactId),
+          .select("id, platform, username, url")
+          .eq("contact_id", contactId)
+          .order("platform")
+          .order("username"),
         supabase
           .from("contact_photos")
-          .select("photo_url, description")
+          .select("id, photo_url, description")
           .eq("contact_id", contactId),
         supabase
           .from("contact_attributes")
-          .select("key, value, label")
+          .select("id, key, value, label")
           .eq("contact_id", contactId),
       ]);
 
     const emails =
       emailsRes.data?.map((e) => ({
+        id: e.id,
         value: e.email,
         label: e.label,
         is_primary: e.is_primary,
@@ -164,6 +273,7 @@ router.get(
 
     const phones =
       phonesRes.data?.map((p) => ({
+        id: p.id,
         value: p.phone_number,
         label: p.label,
         is_primary: p.is_primary,
@@ -171,6 +281,7 @@ router.get(
 
     const social_accounts =
       socialsRes.data?.map((s) => ({
+        id: s.id,
         platform: s.platform,
         username: s.username,
         url: s.url,
@@ -178,12 +289,14 @@ router.get(
 
     const photos =
       photosRes.data?.map((p) => ({
+        id: p.id,
         url: p.photo_url,
         description: p.description,
       })) ?? [];
 
     const attributes =
       attributesRes.data?.map((a) => ({
+        id: a.id,
         key: a.key,
         value: a.value,
         label: a.label,

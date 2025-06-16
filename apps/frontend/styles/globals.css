@@ -100,10 +100,15 @@ button {
 }
 
 /* label-inputs in edit */
+.form-row-label {
+  margin: 0;
+}
+
 .form-row {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+  gap: 10px;
 }
 
 .form-row > label {
@@ -116,6 +121,23 @@ button {
   flex: 1;
   padding: 0.5rem;
 }
+
+.multi-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.multi-row > input {
+  margin: 10px 20px;
+  padding: 7px;
+  border-radius: 7px;
+}
+
+/* .grouped-form-row {
+  display: flex;
+  flex-direction: column;
+} */
 
 .contact-header {
   background-color: var(--white);

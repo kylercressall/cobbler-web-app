@@ -27,35 +27,38 @@ interface FullContact {
   last_name: string;
   avatar_url?: string | null;
   created_at?: string | null;
-  email?: string | null;
-  phone?: string | null;
   organization?: string | null;
   position?: string | null;
 
   phones: {
+    id?: string;
     value: string;
     label?: string;
     is_primary: boolean;
   }[];
 
   emails: {
+    id?: string;
     value: string;
     label?: string;
     is_primary: boolean;
   }[];
 
   social_accounts: {
+    id?: string;
     platform: string;
     username: string;
-    url?: string;
+    url: string;
   }[];
 
   photos: {
+    id?: string;
     url: string;
     description?: string;
   }[];
 
   attributes: {
+    id?: string;
     key: string;
     value: string;
     label?: string;

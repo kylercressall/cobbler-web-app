@@ -65,6 +65,7 @@ export default function Dashboard() {
   const setSelection = (contact: Contact) => {
     setSelectedContact(contact);
     setIsCreating(false);
+    setIsEditing(false);
   };
 
   // handles creating a contact given the contact data
@@ -94,8 +95,11 @@ export default function Dashboard() {
   };
 
   // handle a contact being edited- the submitting/logic after part
-  const handleEditContact = async (updatedData: Partial<Contact>) => {
+  const handleEditContact = async (
+    updatedData: Partial<FullContact> | undefined
+  ) => {
     if (!selectedContact) return;
+    if (!updatedData) return;
 
     const token = await getFetchToken();
     const res = await fetch(
@@ -213,11 +217,10 @@ export default function Dashboard() {
           {selectedContact ? (
             isEditing ? (
               <ContactEdit
-                initial={fullContactDetails!}
+                contactData={fullContactDetails!}
                 onSuccess={handleEditContact}
                 onDiscard={discardEditedContact}
                 onDelete={promptDelete}
-                fetchAllContactDetails={fetchAllContactDetails}
               />
             ) : (
               <ContactDetails
