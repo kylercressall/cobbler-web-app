@@ -61,7 +61,7 @@ export default function ContactDetails({
                 alt={`${contact.first_name}'s avatar`}
               />
             )}
-            <div className="emails">
+            <div className="emails group-header">
               <h3>Emails</h3>
               {contact.emails.length === 0 ? (
                 <p>No emails found.</p>
@@ -76,7 +76,7 @@ export default function ContactDetails({
                 </ul>
               )}
             </div>
-            <div className="phone-numbers">
+            <div className="phone-numbers group-header">
               <h3>Phone Numbers</h3>
               {contact.phones.length === 0 ? (
                 <p>No phone numbers found.</p>
@@ -91,7 +91,7 @@ export default function ContactDetails({
                 </ul>
               )}
             </div>
-            <div className="social-accounts">
+            <div className="social-accounts group-header">
               <h3>Social Accounts</h3>
               {contact.social_accounts.length === 0 ? (
                 <p>No social media accounts found.</p>
@@ -106,7 +106,7 @@ export default function ContactDetails({
                 </ul>
               )}
             </div>
-            <div className="attributes">
+            <div className="attributes group-header">
               <h3>Custom Attributes</h3>
               {contact.social_accounts.length === 0 ? (
                 <p>No custom attributes found.</p>
@@ -114,17 +114,17 @@ export default function ContactDetails({
                 <ul>
                   {contact.attributes.map((attribute, index) => (
                     <li key={index}>
-                      <strong>{attribute.key || "Phone"}:</strong>{" "}
+                      <strong>{attribute.key || "Custom Attribute"}:</strong>{" "}
+                      <i>{attribute.label}</i> <br />
                       {attribute.value}
-                      {attribute.label}
                     </li>
                   ))}
                 </ul>
               )}
             </div>
-            <div className="photos">
+            <div className="photos group-header">
               <h3>Photos</h3>
-              {contact.social_accounts.length === 0 ? (
+              {contact.photos.length === 0 ? (
                 <p>No photos found.</p>
               ) : (
                 <ul>

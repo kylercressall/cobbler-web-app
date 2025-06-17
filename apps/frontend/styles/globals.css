@@ -38,11 +38,9 @@
 }
 
 body {
-  font-family: system-ui, sans-serif;
+  font-family: "Poppins", "Oxygen", "Gothic A1", system-ui, sans-serif;
   background-color: #f9f9f9;
   color: #333;
-
-  font-family: "Poppins", sans-serif;
 }
 
 /* Layout */
@@ -134,6 +132,10 @@ button {
   border-radius: 7px;
 }
 
+.group-header {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
 /* .grouped-form-row {
   display: flex;
   flex-direction: column;

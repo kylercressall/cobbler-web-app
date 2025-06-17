@@ -6,6 +6,7 @@ import PhoneEdit from "./Edit/PhoneEdit";
 import EmailEdit from "./Edit/EmailEdit";
 import ContactDetailsEdit from "./Edit/ContactDetailsEdit";
 import SocialEdit from "./Edit/SocialEdit";
+import CustomAttributeEdit from "./Edit/CustomAttributeEdit";
 
 interface ContactEditProps {
   contactData: Partial<FullContact>;
@@ -68,6 +69,14 @@ export default function ContactEdit({
       setContact({ ...contact, [field]: [...(contact[field] ?? []), newItem] });
       return;
     }
+    if (field == "attributes") {
+      const newItem = { key: "", value: "", label: "" };
+      setContact({
+        ...contact,
+        [field]: [...(contact[field] ?? []), newItem],
+      });
+      return;
+    }
 
     console.log("AddArrayItem invalid field given");
   };
@@ -128,6 +137,12 @@ export default function ContactEdit({
           handleDeleteArrayItem={handleDeleteArrayItem}
         />
         <SocialEdit
+          contact={contact}
+          handleArrayChange={handleArrayChange}
+          handleAddArrayItem={handleAddArrayItem}
+          handleDeleteArrayItem={handleDeleteArrayItem}
+        />
+        <CustomAttributeEdit
           contact={contact}
           handleArrayChange={handleArrayChange}
           handleAddArrayItem={handleAddArrayItem}

@@ -61,6 +61,6 @@ interface FullContact {
     id?: string;
     key: string;
     value: string;
-    label?: string;
+    label: string;
   }[];
 }
