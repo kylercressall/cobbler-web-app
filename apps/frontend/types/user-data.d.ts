@@ -13,8 +13,6 @@ interface Contact {
   user_id: string;
   first_name: string;
   last_name: string;
-  email?: string | null;
-  phone?: string | null;
   organization?: string | null;
   position?: string | null;
   avatar_url?: string | null;

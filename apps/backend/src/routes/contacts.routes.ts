@@ -3,6 +3,8 @@ import type { AuthedRequest } from "../types/express"; // or wherever you define
 import { verifyUser } from "../middleware/auth";
 import { supabase } from "../lib/supabase/server";
 
+import * as contactController from "../controllers/contacts.controller";
+
 const router = Router();
 
 type PhoneInput = {
@@ -20,23 +22,7 @@ type EmailInput = {
 };
 
 // Get all contacts for the authed user, lightrweight
-router.get("/", verifyUser, async (req: AuthedRequest, res: Response) => {
-  const userId = req.user?.id;
-
-  const { data, error } = await supabase
-    .from("contacts")
-    .select("*")
-    .eq("user_id", userId)
-    .order("last_name", { ascending: true })
-    .order("first_name", { ascending: true });
-
-  if (error) {
-    res.status(500).json({ error: error.message });
-    return;
-  }
-
-  res.status(200).json(data ?? []); // don't give null if no data
-});
+router.get("/", verifyUser, contactController.getBasicContacts);
 
 // Create new contact and return it
 router.post("/", verifyUser, async (req: AuthedRequest, res: Response) => {

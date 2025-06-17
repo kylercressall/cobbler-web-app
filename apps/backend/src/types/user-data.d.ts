@@ -11,9 +11,8 @@ interface User {
 interface Contact {
   id: string;
   user_id: string;
-  name: string;
-  email?: string | null;
-  phone?: string | null;
+  first_name: string;
+  last_name: string;
   organization?: string | null;
   position?: string | null;
   avatar_url?: string | null;
