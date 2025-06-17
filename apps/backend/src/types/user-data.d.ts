@@ -17,3 +17,17 @@ interface Contact {
   position?: string | null;
   avatar_url?: string | null;
 }
+
+type PhoneInput = {
+  id?: string;
+  value: string;
+  label?: string;
+  is_primary: boolean;
+};
+
+type EmailInput = {
+  id?: string;
+  value: string;
+  label?: string;
+  is_primary: boolean;
+};
