@@ -69,7 +69,12 @@ export default function Dashboard() {
   };
 
   // handles creating a contact given the contact data
-  const createContact = async (contactData: Partial<Contact>) => {
+  const createContact = async (contactData: Partial<FullContact> | null) => {
+    if (!contactData) {
+      console.error("Create contact recieved no data");
+      return;
+    }
+
     const token = await getFetchToken();
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts`,
