@@ -24,7 +24,7 @@ export default function ContactItem({
         borderBottom: "1px solid #eee",
       }}
     >
-      {contact.name}
+      {contact.first_name} {contact.last_name}
     </div>
   );
 }

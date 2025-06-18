@@ -1,45 +1,63 @@
 // Contact form is the form used to create/edit contacts
 import { useState, useEffect } from "react";
-import { Contact } from "backend/types/user-data";
+import { Contact, FullContact } from "backend/types/user-data";
 import ContactHeader from "./ContactHeader";
 
 interface ContactCreateProps {
-  contact?: Contact;
   onSubmit: (contactData: Partial<Contact>) => void;
   onDiscard: () => void;
 }
 
+type EditableContactStringField =
+  | "first_name"
+  | "last_name"
+  | "organization"
+  | "position"
+  | "avatar_url";
+
+const ContactInput = ({
+  label,
+  field,
+  value,
+  updateContact,
+}: {
+  label: string;
+  field: EditableContactStringField;
+  value: string;
+  updateContact: (field: string, value: string) => void;
+}) => (
+  <div className="form-row">
+    <label>{label}:</label>
+    <input
+      name={field}
+      type="text"
+      value={value}
+      placeholder={label}
+      onChange={(e) => updateContact(field, e.target.value)}
+    />
+  </div>
+);
+
 export default function ContactCreate({
-  contact,
   onSubmit,
   onDiscard,
 }: ContactCreateProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-
-  useEffect(() => {
-    if (contact) {
-      setName(contact.name || "");
-      setEmail(contact.email || "");
-      setPhone(contact.phone || "");
-    } else {
-      setName("");
-      setEmail("");
-      setPhone("");
-    }
-  }, [contact]);
+  const [contact, setContact] = useState<Partial<FullContact>>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, email, phone });
+    onSubmit(contact);
+  };
+
+  const updateContact = (key: keyof FullContact, value: string) => {
+    setContact({ ...contact, [key]: value });
   };
 
   return (
     <div>
       <ContactHeader>
         <button type="submit" form="create-contact-form">
-          {contact ? "Save Changes" : "Create Contact"}
+          Create Contact
         </button>
         <button onClick={onDiscard}>Discard Contact</button>
       </ContactHeader>
@@ -50,36 +68,40 @@ export default function ContactCreate({
         onSubmit={handleSubmit}
       >
         <h2>Create Contact</h2>
-        <div className="form-row">
-          <label htmlFor="name">Name:</label>
-          <input
-            name="name"
-            type="text"
-            placeholder="Full name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className="form-row">
-          <label htmlFor="email">Email:</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-row">
-          <label htmlFor="phone">Phone:</label>
-          <input
-            name="phone"
-            type="tel"
-            placeholder="Phone number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        </div>
+        <ContactInput
+          label="First Name"
+          field="first_name"
+          value={contact.first_name ?? ""}
+          updateContact={(key: string, value: string) =>
+            updateContact(key as EditableContactStringField, value)
+          }
+        />
+        <ContactInput
+          label="Last Name"
+          field="last_name"
+          value={contact.last_name ?? ""}
+          updateContact={(key: string, value: string) =>
+            updateContact(key as EditableContactStringField, value)
+          }
+        />
+        <ContactInput
+          label="Organization"
+          field="organization"
+          value={contact.organization ?? ""}
+          updateContact={(key: string, value: string) =>
+            updateContact(key as EditableContactStringField, value)
+          }
+        />
+        <ContactInput
+          label="Position"
+          field="position"
+          value={contact.position ?? ""}
+          updateContact={(key: string, value: string) =>
+            updateContact(key as EditableContactStringField, value)
+          }
+        />
+
+        <i>Create then edit the contact to add additional details.</i>
       </form>
     </div>
   );

@@ -21,7 +21,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
+    <div className="login-pannel">
+      <h1>Cobbler</h1>
+      <img src="/images/cobbler-logo.png" alt="logo not found" />
       <h2>Login</h2>
       <input
         type="email"
@@ -36,7 +38,8 @@ export default function LoginPage() {
         placeholder="Password"
       />
       <button onClick={handleLogin}>Log In</button>
-      {message && <p>{message}</p>}
+      {message && <p className="error-message">{message}</p>}
+      <p>(sign in with google/linkedin/github coming soon)</p>
     </div>
   );
 }

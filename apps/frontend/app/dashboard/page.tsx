@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import { Contact } from "../../types/user-data";
+import { Contact, FullContact } from "../../types/user-data";
 
 import Header from "../../components/Header";
 import ContactList from "../../components/Contact/List/ContactList";
@@ -15,13 +15,13 @@ import { getFetchToken } from "../../lib/getFetchToken";
 import ContactDashboard from "backend/components/Contact/ContactDashboard";
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [username, setUsername] = useState<string>("");
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [fullContactDetails, setFullContactDetails] =
+    useState<FullContact | null>(null);
 
   // States:
   //   selectedContact -> if true, show the details and allow editing
@@ -37,11 +37,7 @@ export default function Dashboard() {
   const fetchContacts = async () => {
     try {
       const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      if (!token) {
-        console.error("Not logged in");
-        return;
-      }
+      const token = await getFetchToken();
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts`,
@@ -69,10 +65,16 @@ export default function Dashboard() {
   const setSelection = (contact: Contact) => {
     setSelectedContact(contact);
     setIsCreating(false);
+    setIsEditing(false);
   };
 
   // handles creating a contact given the contact data
-  const createContact = async (contactData: Partial<Contact>) => {
+  const createContact = async (contactData: Partial<FullContact> | null) => {
+    if (!contactData) {
+      console.error("Create contact recieved no data");
+      return;
+    }
+
     const token = await getFetchToken();
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts`,
@@ -98,8 +100,11 @@ export default function Dashboard() {
   };
 
   // handle a contact being edited- the submitting/logic after part
-  const handleEditContact = async (updatedData: Partial<Contact>) => {
+  const handleEditContact = async (
+    updatedData: Partial<FullContact> | undefined
+  ) => {
     if (!selectedContact) return;
+    if (!updatedData) return;
 
     const token = await getFetchToken();
     const res = await fetch(
@@ -173,6 +178,32 @@ export default function Dashboard() {
     }
   };
 
+  const fetchAllContactDetails = async () => {
+    try {
+      const token = await getFetchToken();
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts/${selectedContact?.id}/full`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`Request failed: ${res.status}`);
+      }
+
+      const data: FullContact = await res.json();
+
+      setFullContactDetails(data);
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch contacts:", err);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -180,10 +211,7 @@ export default function Dashboard() {
         className="app-container"
         style={{ display: "flex", height: "100vh" }}
       >
-        <div
-          className="sidebar"
-          style={{ width: "300px", borderRight: "1px solid #ccc" }}
-        >
+        <div className="sidebar" style={{ backgroundColor: "var(--white)" }}>
           <ContactList
             contacts={contacts}
             onSelect={setSelection}
@@ -194,17 +222,18 @@ export default function Dashboard() {
           {selectedContact ? (
             isEditing ? (
               <ContactEdit
-                contactData={selectedContact}
+                contactData={fullContactDetails!}
                 onSuccess={handleEditContact}
                 onDiscard={discardEditedContact}
                 onDelete={promptDelete}
               />
             ) : (
               <ContactDetails
-                contact={selectedContact}
+                contactId={selectedContact.id}
                 onEdit={editSelectedContact}
                 onCreate={toggleCreateContact}
                 toggleDashboard={toggleDashboard}
+                fetchAllContactDetails={fetchAllContactDetails}
               />
             )
           ) : isCreating ? (
@@ -215,13 +244,13 @@ export default function Dashboard() {
               onDiscard={discardEditedContact}
             />
           ) : (
-            <ContactDashboard />
+            <ContactDashboard onCreate={toggleCreateContact} />
           )}
         </div>
       </div>
       {showConfirmModal && (
         <ConfirmModal
-          message={`Are you sure you want to delete ${selectedContact?.name}?`}
+          message={`Are you sure you want to delete ${selectedContact?.first_name} ${selectedContact?.last_name}?`}
           onConfirm={handleDelete}
           onCancel={() => setShowConfirmModal(false)}
         />
