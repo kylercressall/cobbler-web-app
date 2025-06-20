@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { Contact, FullContact } from "../../types/user-data";
+import {
+  Contact,
+  FullContact,
+} from "../../../../packages/shared-types/user-data";
 import ContactHeader from "./ContactHeader";
 import PhoneEdit from "./Edit/PhoneEdit";
 import EmailEdit from "./Edit/EmailEdit";

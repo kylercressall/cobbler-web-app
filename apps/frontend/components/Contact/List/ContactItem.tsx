@@ -1,4 +1,4 @@
-import { Contact } from "../../../types/user-data";
+import { Contact } from "../../../../../packages/shared-types/user-data";
 
 interface ContactItemProps {
   contact: Contact;
