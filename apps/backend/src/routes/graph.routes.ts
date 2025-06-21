@@ -5,8 +5,12 @@ import * as graphController from "../controllers/graph.contoller";
 
 const router = Router();
 
+// app.use("/api/graph", graphRoutes);
+
 // Get all contact nodes and edges
-router.get("/", verifyUser, graphController.getAllNodesAndEdges);
+router.get("/nodes", verifyUser, graphController.getAllNodes);
+
+router.get("/edges", verifyUser, graphController.getAllEdges);
 
 // Update the position of a contactnode
 router.post("/position", verifyUser, graphController.setNodePosition);
