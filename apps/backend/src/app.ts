@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import contactsRoutes from "./routes/contacts.routes";
 import userRoutes from "./routes/user.routes";
+import graphRoutes from "./routes/graph.routes";
 // import usersRoutes from "./routes/users.routes";
 // import interactionsRoutes from "./routes/interactions.routes";
 // import { errorHandler } from "./middleware/errorHandler";
@@ -22,8 +23,6 @@ app.get("/", (_req, res) => {
 
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/user", userRoutes);
-// app.use("/api/interactions", interactionsRoutes);
-
-// app.use(errorHandler);
+app.use("/api/graph", graphRoutes);
 
 export default app;
