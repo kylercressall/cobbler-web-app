@@ -1,5 +1,5 @@
 // Contact List displays all the selectable contacts in the left colmn
-import { Contact } from "../../../types/user-data";
+import { Contact } from "../../../../../packages/shared-types/user-data";
 import ContactItem from "./ContactItem";
 
 interface ContactListProps {

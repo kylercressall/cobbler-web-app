@@ -3,7 +3,7 @@ import { Response } from "express";
 
 import * as contactServices from "../services/contacts.services";
 import { ContactSchema } from "../schemas/contact.schema";
-import { EmailInput, PhoneInput } from "../types/user-data";
+import { EmailInput, PhoneInput } from "@shared-types/user-data";
 
 export const getBasicContacts = async (req: AuthedRequest, res: Response) => {
   const userId = req.user?.id || "";

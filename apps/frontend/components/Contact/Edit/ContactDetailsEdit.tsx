@@ -1,4 +1,7 @@
-import { Contact, FullContact } from "../../../types/user-data";
+import {
+  Contact,
+  FullContact,
+} from "../../../../../packages/shared-types/user-data";
 
 interface ContactDetailsEditProps {
   contact: Partial<FullContact> | undefined;

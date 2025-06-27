@@ -1,4 +1,4 @@
-import { FullContact } from "../../../types/user-data";
+import { FullContact } from "../../../../../packages/shared-types/user-data";
 
 interface CustomAttributeEditProps {
   contact: Partial<FullContact> | undefined;

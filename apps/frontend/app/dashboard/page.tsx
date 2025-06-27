@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import { Contact, FullContact } from "../../types/user-data";
+import {
+  Contact,
+  FullContact,
+} from "../../../../packages/shared-types/user-data";
 
 import Header from "../../components/Header";
 import ContactList from "../../components/Contact/List/ContactList";
@@ -13,6 +16,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 
 import { getFetchToken } from "../../lib/getFetchToken";
 import ContactDashboard from "backend/components/Contact/ContactDashboard";
+import NetworkGraph from "backend/components/NetworkGraph/NetworkGraph";
 
 export default function Dashboard() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -209,7 +213,7 @@ export default function Dashboard() {
       <Header />
       <div
         className="app-container"
-        style={{ display: "flex", height: "100vh" }}
+        // style={{ display: "flex", height: "100vh" }}
       >
         <div className="sidebar" style={{ backgroundColor: "var(--white)" }}>
           <ContactList
@@ -244,7 +248,8 @@ export default function Dashboard() {
               onDiscard={discardEditedContact}
             />
           ) : (
-            <ContactDashboard onCreate={toggleCreateContact} />
+            <NetworkGraph />
+            // <ContactDashboard onCreate={toggleCreateContact} />
           )}
         </div>
       </div>

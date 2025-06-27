@@ -1,5 +1,8 @@
 // Contact Details is the right pane that displays the details of a given contact
-import { Contact, FullContact } from "../../types/user-data";
+import {
+  Contact,
+  FullContact,
+} from "../../../../packages/shared-types/user-data";
 import { useEffect, useState } from "react";
 
 import ContactHeader from "./ContactHeader";
