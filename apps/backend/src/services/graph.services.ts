@@ -80,23 +80,48 @@ export const getAllEdges = async (userId: string) => {
 
 export const updateNodePosition = async (nodeData: NodePosition) => {
   // change to node position data type
-  const data = {};
-  const error = { message: "" };
-  return { data, error };
+  const { id, x, y } = nodeData;
+  const { data: xData, error: xError } = await supabase
+    .from("graph_contact_positions")
+    .update({ x: x })
+    .eq("id", id);
+  const { data: yData, error: yError } = await supabase
+    .from("graph_contact_positions")
+    .update({ y: y })
+    .eq("id", id);
+
+  let error = {};
+  if (xError) error = { error: xError };
+  else if (yError) error = { error: yError };
+  else error = { error: null };
+
+  return { data: nodeData, error };
 };
+
+// export const EdgeSchema = z.object({
+//   id: z.string().uuid(),
+//   source: z.string().uuid(),
+//   target: z.string().uuid(),
+//   label: z.string().optional(),
+//   type: z.string().optional(), // reactflow type
+// });
+
 export const createEdge = async (validatedData: Edge) => {
-  // change to edge data type
-  const data = {};
-  const error = { message: "" };
+  const { data, error } = await supabase
+    .from("graph_edges")
+    .insert({ validatedData });
+
   return { data, error };
 };
 export const deleteEdge = async (edgeId: string) => {
-  const data = {};
-  const error = { message: "" };
+  const { data, error } = await supabase
+    .from("graph_edges")
+    .delete()
+    .eq("id", edgeId);
+
   return { data, error };
 };
 export const updateEdge = async (validatedData: Edge) => {
-  // change to edge data type
   const data = {};
   const error = { message: "" };
   return { data, error };

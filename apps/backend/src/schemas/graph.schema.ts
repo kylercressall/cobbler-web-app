@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const NodePositionSchema = z.object({
+  id: z.string().uuid(),
   x: z.number(),
   y: z.number(),
 });
